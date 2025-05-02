@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>REHMAN CHATBOT</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+    #chat { border: 1px solid #ccc; padding: 10px; background: #fff; height: 400px; overflow-y: scroll; }
+    .message { margin: 5px 0; }
+    .user { color: blue; }
+    .bot { color: green; }
+  </style>
+</head>
+<body>
+
+<h2>ABDUL REHMAN CHATBOT</h2>
+<div id="chat"></div>
+<input type="text" id="userInput" placeholder="Type your message..." style="width: 300px;">
+<button onclick="sendMessage()">Send</button>
+
+<script>
+  function sendMessage() {
+    const userInput = document.getElementById("userInput").value;
+    if (userInput.trim() === "") return;
+
+    const chatDiv = document.getElementById("chat");
+    chatDiv.innerHTML += `<div class="message user">You: ${userInput}</div>`;
+    document.getElementById("userInput").value = "";
+
+    fetch("http://127.0.0.1:5000/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userInput })
+    })
+    .then(response => response.json())
+    .then(data => {
+      chatDiv.innerHTML += `<div class="message bot">Bot: ${data.reply}</div>`;
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+    });
+  }
+</script>
+
+</body>
+</html>
